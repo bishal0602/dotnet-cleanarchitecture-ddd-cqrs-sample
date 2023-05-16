@@ -1,0 +1,1 @@
+dotnet ef database update -p ..\src\Books.Infrastructure\  -s ..\src\Books.API\
