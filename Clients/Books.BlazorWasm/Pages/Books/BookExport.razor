@@ -1,0 +1,68 @@
+﻿@page "/export"
+@using Microsoft.AspNetCore.Authorization;
+@using global::Books.BlazorWasm.Contracts;
+@attribute [Authorize]
+@inject IBookService bookService;
+@inject IJSRuntime JSRuntime;
+
+<h3>BookCsvFile</h3>
+@if (IsLoading)
+{
+    <div class="alert alert-info" role="alert">
+        <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="spinner-grow" style="width: 3rem; height: 3rem;" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+else
+{
+<button class="btn btn-primary" @onclick="DownloadCSVFile">Download CSV</button>
+    
+}
+
+@if (IsError)
+{
+    <p class="text-danger">@ErrorType : @ErrorMessage</p>
+}
+
+@code {
+    private string? ErrorType ;
+    private string? ErrorMessage ;
+    private bool IsError = false;
+    private bool IsLoading = false;
+    public async Task DownloadCSVFile(){
+        IsError = false;
+        ErrorMessage = null;
+        ErrorType = null;
+        IsLoading = true;
+        try
+        {
+            var file = await bookService.DownloadCsv();
+            //var base64Data = Convert.ToBase64String(file.Data);
+
+            //var dataUrl = $"data:{file.ContentType};base64,{base64Data}";
+            //Console.WriteLine(dataUrl);
+
+            //await JSRuntime.InvokeVoidAsync("window.open", dataUrl, "_blank");
+            var fileName = file.FileName;
+            var fileStream = new MemoryStream(file.Data);
+
+            using var streamRef = new DotNetStreamReference(stream: fileStream);
+
+            await JSRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+        }
+        catch (ApiException ex)
+        {
+            IsError = true;
+            ErrorType = ex.ProblemDetails.Type;
+            ErrorMessage = ex.ProblemDetails.Detail;
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+}

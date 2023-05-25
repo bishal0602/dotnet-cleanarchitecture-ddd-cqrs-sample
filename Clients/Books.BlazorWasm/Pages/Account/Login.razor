@@ -1,0 +1,74 @@
+﻿@page "/login"
+@inject BooksAPIAuthenticationProvider _authenticationProvider;
+@inject NavigationManager Navigation;
+
+<div class="card">
+    <h4 class="card-header">Login</h4>
+    <div class="card-body">
+        <EditForm Model="@_loginModel" OnValidSubmit="OnValidSubmit">
+            <ValidationSummary/>
+            <DataAnnotationsValidator />
+            <div class="form-group">
+                <label>Email</label>
+                <InputText @bind-Value="_loginModel.Email" class="form-control" />
+                <ValidationMessage For="@(() => _loginModel.Email)" />
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <InputText @bind-Value="_loginModel.Password" type="password" class="form-control" />
+                <ValidationMessage For="@(() => _loginModel.Password)" />
+            </div>
+            <button disabled="@_loading" class="btn btn-primary">
+                @if (_loading)
+                {
+                    <span class="spinner-border spinner-border-sm mr-1"></span>
+                }
+                Login
+            </button>
+            <NavLink href="account/register" class="btn btn-link">Register</NavLink>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private LoginViewModel _loginModel = new LoginViewModel();
+    private CustomValidation? customValidation;
+    private bool _loading = false;
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if(authenticationStateTask is not null)
+        {
+            var authState = await authenticationStateTask;
+            var user = authState.User;
+            if (user?.Identity is not null && user.Identity.IsAuthenticated)
+            {
+                Navigation.NavigateTo("/");
+            }
+        }
+    }
+
+    private async Task OnValidSubmit()
+    {
+        _loading = true;
+        try
+        {
+            await _authenticationProvider.LoginAsync(_loginModel.Email, _loginModel.Password);
+            Navigation.NavigateTo("/");
+        }
+        catch(ApiException ex)
+        {
+            customValidation?.ClearErrors();
+            var errors = new Dictionary<string, List<string>>();
+            errors.Add(ex.ProblemDetails.Type, new List<string> { ex.ProblemDetails.Detail });
+            customValidation?.DisplayErrors(errors);
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+}

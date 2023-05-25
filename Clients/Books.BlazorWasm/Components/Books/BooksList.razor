@@ -1,0 +1,61 @@
+﻿@using global::Books.BlazorWasm.Contracts;
+@using global::Books.BlazorWasm.Models.Books;
+@using global::Books.BlazorWasm.Models.Common;
+@inject NavigationManager Navigation
+@inject IBookService bookService;
+
+<main class="container">
+    @if(books is null)
+    {
+        <p>Loading...</p>
+    }
+    else
+    {
+        @foreach (var book in books)
+        {
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title" @onclick="@(() => Navigation.NavigateTo($"books/{book.Id}"))">@book.Title</h5>
+                    <p class="card-text">@book.Description</p>
+                    <p class="card-text">
+                        Authors:
+                        @foreach (var author in book.Authors)
+                        {
+                            <a class="card-link" 
+                            @onclick="@(()=> Navigation.NavigateTo($"authors/{author.Id}"))">@author.FirstName @author.LastName</a>
+ 
+                            <span> </span>
+                        }
+                    </p>
+                </div>
+            </div>
+        }
+
+    }
+</main>
+
+
+@code {
+    public int pageNumber = 1;
+    public int pageSize = 5;
+
+    List<BookOverviewViewModel>? books;
+    PaginationMetadata? paginationMetadata;
+
+    protected async override Task OnInitializedAsync()
+    {
+        await GetBooksAsync();
+    }
+
+    private async Task GetBooksAsync()
+    {
+        (books, paginationMetadata) = await bookService.GetBooksList(pageNumber, pageSize);
+    }
+
+    private async Task ChangePage(int pageNum)
+    {
+        pageNumber = pageNum;
+        await GetBooksAsync();
+        StateHasChanged();
+    }
+}

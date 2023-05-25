@@ -6,7 +6,7 @@ A sample implementation demonstrating the implementation of Domain-Driven Design
 cd scripts
 .\add-migrations.ps1 -Name MigrationName
 .\update-database.ps1
-.\run.ps1 -All
+.\run.ps1 [-RunBlazorWasm] [-RunExternalServices]
 ```
 
 ## Project Structure
@@ -67,7 +67,7 @@ The project follows a modular structure based on the principles of Clean Archite
   - **Services**: Implements various services used by the project.
   - **Authentication**: Handles authentication-related infrastructure concerns.
 
-- **Presentation**: Handles the web presentation layer of the application.
+- **Presentation**: Handles the web presentation layer(API) of the application.
 
   - **Controllers**: Defines API controllers that handle incoming HTTP requests.
   - **Filters**: Contains custom filters that can be applied to the API controllers or specific actions

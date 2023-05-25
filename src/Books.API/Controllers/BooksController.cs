@@ -55,7 +55,6 @@ namespace Books.API.Controllers
                 previousPageLink,
                 nextPageLink
             };
-
             Response.Headers.Add("X-Pagination",
                    JsonSerializer.Serialize(paginationMetadata, new JsonSerializerOptions() { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping }));
 
@@ -146,6 +145,7 @@ namespace Books.API.Controllers
         }
 
         [HttpGet("export")]
+        [Authorize]
         [ProducesResponseType(typeof(FileResult), statusCode: StatusCodes.Status200OK)]
         public async Task<IActionResult> ExportBooks()
         {

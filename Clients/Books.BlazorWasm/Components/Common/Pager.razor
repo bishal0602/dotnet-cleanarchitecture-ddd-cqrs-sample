@@ -1,0 +1,17 @@
+﻿<ul class="pagination justify-content-center">
+    <li class="page-item @((CurrentPage<=1) ? "disabled" :"")"><button class="page-link" @onclick="@(()=>OnPageChanged.InvokeAsync(CurrentPage-1))">Previous</button></li>
+    <li class="page-item"><span class="page-link">Page @CurrentPage of @TotalPages</span></li>
+    <li class="page-item @((CurrentPage>=TotalPages) ? "disabled" :"")"> <button class="page-link" @onclick="@(()=> OnPageChanged.InvokeAsync(CurrentPage+1))">Next</button></li>
+</ul>
+@code
+{
+    [Parameter]
+    [EditorRequired]
+    public int CurrentPage { get; set; }
+    [Parameter]
+    [EditorRequired]
+    public int TotalPages { get; set; }
+    [Parameter]
+    [EditorRequired]
+    public EventCallback<int> OnPageChanged { get; set; }
+}

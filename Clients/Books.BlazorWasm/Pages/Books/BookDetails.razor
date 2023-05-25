@@ -1,0 +1,105 @@
+﻿@page "/books/{BookId:guid}"
+@using global::Books.BlazorWasm.Contracts;
+@using global::Books.BlazorWasm.Models.Books;
+@inject IBookService bookService;
+@inject NavigationManager Navigation;
+
+@if (IsLoading)
+{
+    <div class="alert alert-info" role="alert">
+        <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="spinner-grow" style="width: 3rem; height: 3rem;" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+@if (IsError)
+{
+    <div class="alert alert-danger" role="alert">
+        <div class="card">
+            <div class="card-header">
+                Something went wrong!
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">@ErrorType</h5>
+                <p class="card-text">@ErrorMessage</p>
+                <button @onclick="@(() => Navigation.NavigateTo("/"))" class="btn btn-primary">Go to home</button>
+            </div>
+        </div>
+    </div>
+}
+@if (!IsLoading && !IsError)
+{
+    <PageTitle>@Book.Title</PageTitle>
+    <div class="container">
+        <h3>@Book.Title</h3>
+
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Authors:</h4>
+                <ul>
+                    @foreach (var author in Book.Authors)
+                    {
+                        <a class="card-link"
+                        @onclick="@(()=> Navigation.NavigateTo($"authors/{author.Id}"))">@author.FirstName @author.LastName</a>
+                    }
+                </ul>
+            </div>
+
+            <div class="col-md-6">
+                <h4>Reviews:</h4>
+                <ul>
+                    @foreach (var review in Book.Reviews)
+                    {
+                        <li>
+                            <strong>@review.Username:</strong> @review.Comment
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <h4>Description:</h4>
+        <p>@Book.Description</p>
+    </div>
+}
+
+@code {
+    [Parameter] public Guid BookId { get; set; }
+    public BookDetailsViewModel Book { get; set; }
+    private bool IsLoading = true;
+    private bool IsError = false;
+    private string ErrorType = "InternalError";
+    private string ErrorMessage = "Something went wrong";
+
+    protected async override Task OnInitializedAsync()
+    {
+        await GetBookAsync(BookId);
+    }
+    private async Task GetBookAsync(Guid bookId)
+    {
+        try
+        {
+            IsError = false;
+            Book = await bookService.GetBookByIdAsync(bookId, false);
+        }
+        catch (ApiException apiException)
+        {
+            IsError = true;
+            ErrorType = apiException.ProblemDetails.Type;
+            ErrorMessage = apiException.ProblemDetails.Detail;
+        }
+        catch (Exception exception)
+        {
+            IsError = true;
+            ErrorMessage = exception.Message;
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+}
+

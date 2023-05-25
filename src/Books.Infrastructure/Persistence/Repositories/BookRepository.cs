@@ -21,18 +21,20 @@ namespace Books.Infrastructure.Persistence.Repositories
         }
         public async Task<IEnumerable<Book>> GetBooksAsync()
         {
-            return await _context.Books.Include(b => b.Authors).Include(b => b.Reviews).ToListAsync();
+            return await _context.Books.OrderBy(b => b.Title).Include(b => b.Authors).Include(b => b.Reviews).ToListAsync();
         }
         public async Task<PagedList<Book>> GetBooksAsync(int pageNumber = 1, int pageSize = 10)
         {
             IQueryable<Book> books = _context.Books
-                                      .Include(b => b.Authors);
+                .OrderBy(b => b.Title)
+                .Include(b => b.Authors);
             return await books.CreatePagedListAsync(pageNumber, pageSize);
 
         }
         public async Task<IEnumerable<Book>> GetBooksAsync(IEnumerable<BookId> bookIds)
         {
             return await _context.Books.Where(b => bookIds.Contains(b.Id))
+                                       .OrderBy(b => b.Title)
                                        .Include(b => b.Reviews)
                                        .Include(b => b.Authors)
                                        .ToListAsync();
@@ -55,7 +57,7 @@ namespace Books.Infrastructure.Persistence.Repositories
 
         public IAsyncEnumerable<Book> GetBooksAsAsyncEnumerble(CancellationToken cancellationToken)
         {
-            return _context.Books.Include(b => b.Reviews)
+            return _context.Books.OrderBy(b => b.Title).Include(b => b.Reviews)
                                       .Include(b => b.Authors)
                                       .AsAsyncEnumerable();
         }

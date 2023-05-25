@@ -1,0 +1,12 @@
+﻿@inject BooksAPIAuthenticationProvider _authenticationProvider;
+@page "/logout"
+@inject NavigationManager Navigation;
+
+@code {
+    protected async override Task OnInitializedAsync()
+    {
+        await _authenticationProvider.LogoutAsync();
+        Navigation.NavigateTo("/");
+    }
+
+}

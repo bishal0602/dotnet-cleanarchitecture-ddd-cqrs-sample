@@ -1,0 +1,18 @@
+﻿@page "/"
+@page "/books"
+
+<PageTitle>Index</PageTitle>
+<ErrorBoundary>
+    <ChildContent>
+        <Books.BlazorWasm.Components.Books.BooksList/>
+    </ChildContent>
+    <ErrorContent>
+        <p class="text-danger">@ErrorMessage</p>
+    </ErrorContent>
+</ErrorBoundary>
+
+@code {
+
+    private string ErrorMessage = "Failed to fetch book data. Please try again later.";
+
+}

@@ -1,4 +1,4 @@
-﻿namespace Books.API.Models.BookDtos
+﻿namespace Books.BlazorWasm.External.Models.BookDtos
 {
     public class BookDto
     {

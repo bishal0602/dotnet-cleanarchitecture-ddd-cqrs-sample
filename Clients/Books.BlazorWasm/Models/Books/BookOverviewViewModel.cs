@@ -1,17 +1,17 @@
-﻿namespace Books.API.Models.BookDtos
+﻿namespace Books.BlazorWasm.Models.Books
 {
-    public class BookDto
+    public class BookOverviewViewModel
     {
         public Guid Id { get; set; }
-        public string Title { get; set; } = string.Empty;
+        public string Title { get; set; }
         public string? Description { get; set; }
-        public IEnumerable<AuthorForBookDto> Authors { get; set; } = new List<AuthorForBookDto>();
+        public List<AuthorsForBookOverviewViewModel> Authors { get; set; }
     }
-    public class AuthorForBookDto
+
+    public class AuthorsForBookOverviewViewModel
     {
         public Guid Id { get; set; }
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
     }
-
 }
