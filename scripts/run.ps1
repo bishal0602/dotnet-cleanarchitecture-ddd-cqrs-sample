@@ -21,16 +21,25 @@ Runs both the api and the external services.
 .EXAMPLE
 .\RunProjects.ps1 -RunBlazorWasm
 Runs both the api and the Blazor frontend.
+
+
+.EXAMPLE
+.\RunProjects.ps1 -RunReact
+Runs both the API and the React project.`
 #>
 
 param (
     [Parameter(HelpMessage = "Indicates whether to run the external services")]
-    [Alias("runext")]
+    [Alias("external")]
     [switch]$RunExternalServices,
 
     [Parameter(HelpMessage = "Indicates whether to run Blazor frontend")]
-    [Alias("runblazor")]
-    [switch]$RunBlazorWasm
+    [Alias("blazor")]
+    [switch]$RunBlazorWasm,
+
+    [Parameter(HelpMessage = "Indicates whether to run the React project")]
+    [Alias("react")]
+    [switch]$RunReact
 )
 
 function RunProject($projectPath) {
@@ -62,4 +71,9 @@ if ($RunExternalServices) {
 if($RunBlazorWasm){
     $webUI = "..\Clients\Books.BlazorWasm\"
     RunProject $webUI
+}
+
+if ($RunReact) {
+    $reactUI = "..\Clients\Books.ReactUI\"
+    Start-Process "npm" -ArgumentList "run dev" -WorkingDirectory $reactUI -PassThru
 }

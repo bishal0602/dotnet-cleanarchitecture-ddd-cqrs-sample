@@ -6,7 +6,7 @@ A sample implementation demonstrating the implementation of Domain-Driven Design
 cd scripts
 .\add-migrations.ps1 -Name MigrationName
 .\update-database.ps1
-.\run.ps1 [-RunBlazorWasm] [-RunExternalServices]
+.\run.ps1 [-RunBlazorWasm] [-RunExternalServices] [-RunReact]
 ```
 
 ## Project Structure
