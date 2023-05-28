@@ -5,6 +5,8 @@ import ProtectedRoute from "./containers/ProtectedRoute";
 import Profile from "./pages/Profile";
 import Layout from "./containers/Layout";
 import Details from "./pages/BookDetails";
+import ErrorCard from "./components/common/ErrorCard";
+import { Export } from "./pages/Export";
 
 const App = () => {
   return (
@@ -22,7 +24,15 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        <Route path="*">404</Route>
+        <Route
+          path="/export"
+          element={
+            <ProtectedRoute>
+              <Export />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="*" element={<ErrorCard/>}/>
       </Routes>
     </Layout>
   );

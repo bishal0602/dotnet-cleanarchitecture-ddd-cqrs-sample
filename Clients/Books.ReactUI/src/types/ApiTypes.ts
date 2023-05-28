@@ -52,3 +52,10 @@ export type BookDetails = {
   description: string;
   authors: Author[];
 };
+
+
+export type FileExportModel = {
+  data: any;
+  fileName: string;
+  contentType: string;
+}

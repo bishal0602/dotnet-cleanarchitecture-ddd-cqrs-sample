@@ -31,6 +31,9 @@ const Navbar = () => {
               <Link to="/">Home</Link>
             </li>
             <li>
+              <Link to="/export">Export</Link>
+            </li>
+            <li>
               <a href="https://github.com/bishal0602/dotnet-cleanarchitecture-ddd-cqrs-sample">
                 Github
               </a>

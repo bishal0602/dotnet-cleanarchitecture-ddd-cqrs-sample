@@ -3,6 +3,7 @@ import {
   Book,
   BookDetails,
   BooksResponse,
+  FileExportModel,
   Pagination,
 } from "../types/ApiTypes";
 
@@ -31,4 +32,23 @@ export const getBookDetails = async (id: string): Promise<BookDetails> => {
     return book;
   }
   throw new Error("Error getting book");
+};
+
+export const downloadBooksCsv = async (accessToken:string) : Promise<FileExportModel>=> {
+  const response = await axios.get(`${API_SERVER}/api/books/export`, {
+    responseType: "blob",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  const contentDisposition = response.headers["content-disposition"];
+  const fileNameMatch = contentDisposition.match((/filename\*?=['"]?(?:UTF-\d['"]*)?([^;\r\n"']*)['"]?;?/i));
+  const fileName = fileNameMatch ? fileNameMatch[1] : "books.csv";
+  const contentType = response.headers["content-type"];
+  if (contentType !== "text/csv") {
+    throw new Error("The server did not return a CSV file.");
+  }
+return {data: response.data, fileName: fileName, contentType: contentType};
+
 };
