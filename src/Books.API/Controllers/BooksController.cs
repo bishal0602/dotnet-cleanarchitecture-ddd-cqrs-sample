@@ -147,6 +147,8 @@ namespace Books.API.Controllers
         [HttpGet("export")]
         [Authorize]
         [ProducesResponseType(typeof(FileResult), statusCode: StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), statusCode: StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), statusCode: StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> ExportBooks()
         {
             var query = new GetBookExportQuery();

@@ -3,7 +3,9 @@ using Books.Domain.BookAggregate;
 using Books.Domain.BookAggregate.Entities;
 using Books.Domain.BookAggregate.ValueObjects;
 using Books.Domain.Common;
+using Books.Domain.Common.Interfaces;
 using Books.Domain.UserAggregate;
+using Books.Infrastructure.Persistence.Interceptors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +16,7 @@ namespace Books.Infrastructure.Persistence
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly ILoggedInUserService _loggedInUserService;
         private readonly IPasswordHasher<User> _passwordHasher;
+        private readonly PublishDomainEventInterceptor _publishDomainEventInterceptor;
 
         public DbSet<Book> Books { get; set; } = null!;
         public DbSet<BookReview> BookReviews { get; set; } = null!;
@@ -21,16 +24,28 @@ namespace Books.Infrastructure.Persistence
         public DbSet<AuthorBook> AuthorBooks { get; set; } = null!;
         public DbSet<User> Users { get; set; } = null!;
 
-        public BooksDbContext(DbContextOptions<BooksDbContext> options, IDateTimeProvider dateTimeProvider, ILoggedInUserService loggedInUserService, IPasswordHasher<User> passwordHasher) : base(options)
+        public BooksDbContext(DbContextOptions<BooksDbContext> options, IDateTimeProvider dateTimeProvider, ILoggedInUserService loggedInUserService, IPasswordHasher<User> passwordHasher, PublishDomainEventInterceptor publishDomainEventInterceptor) : base(options)
         {
             _dateTimeProvider = dateTimeProvider ?? throw new ArgumentNullException(nameof(dateTimeProvider));
             _loggedInUserService = loggedInUserService;
             _passwordHasher = passwordHasher;
+            _publishDomainEventInterceptor = publishDomainEventInterceptor;
         }
-
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.AddInterceptors(_publishDomainEventInterceptor);
+            base.OnConfiguring(optionsBuilder);
+        }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Ignore<List<IDomainEvent>>()
+                .ApplyConfigurationsFromAssembly(typeof(BooksDbContext).Assembly);
+            DataSeed.Seed(modelBuilder, _passwordHasher, _dateTimeProvider);
+            base.OnModelCreating(modelBuilder);
+        }
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
-            foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
+            foreach (var entry in ChangeTracker.Entries<IAuditable>())
             {
                 switch (entry.State)
                 {
@@ -49,11 +64,6 @@ namespace Books.Infrastructure.Persistence
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(BooksDbContext).Assembly);
-            DataSeed.Seed(modelBuilder, _passwordHasher, _dateTimeProvider);
-            base.OnModelCreating(modelBuilder);
-        }
+
     }
 }

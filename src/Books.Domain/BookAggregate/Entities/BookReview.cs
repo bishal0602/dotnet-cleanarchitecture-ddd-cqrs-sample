@@ -1,9 +1,9 @@
 using Books.Domain.BookAggregate.ValueObjects;
-using Books.Domain.Common.Interfaces;
+using Books.Domain.Common;
 
 namespace Books.Domain.BookAggregate.Entities
 {
-    public class BookReview : IEntity<BookReviewId>
+    public class BookReview : Entity<BookReviewId>
     {
         public BookReviewId Id { get; private set; }
         public string Username { get; private set; }

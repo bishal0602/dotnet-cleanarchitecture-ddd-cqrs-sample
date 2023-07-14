@@ -1,11 +1,12 @@
 using Books.Domain.BookAggregate.Entities;
+using Books.Domain.BookAggregate.Events;
 using Books.Domain.BookAggregate.ValueObjects;
 using Books.Domain.Common;
 using Books.Domain.Common.Interfaces;
 
 namespace Books.Domain.BookAggregate
 {
-    public class Book : AuditableEntity, IAggregateRoot<BookId>
+    public class Book : AuditableAggregate<BookId>
     {
         private readonly IList<BookReview> _bookReviews = new List<BookReview>();
         private readonly IList<Author> _authors = new List<Author>();
@@ -24,7 +25,12 @@ namespace Books.Domain.BookAggregate
             Description = description;
         }
         public static Book Create(BookId id, string title, string? description) => new(id, title, description);
-        public static Book CreateNew(string title, string? description) => new(BookId.CreateNew(), title, description);
+        public static Book CreateNew(string title, string? description)
+        {
+            Book book = new(BookId.CreateNew(), title, description);
+            book.AddDomainEvent(new BookCreatedEvent(book));
+            return book;
+        }
 
         public void AddAuthor(Author author)
         {

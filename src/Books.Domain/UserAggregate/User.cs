@@ -1,4 +1,4 @@
-using Books.Domain.Common.Interfaces;
+using Books.Domain.Common;
 using Books.Domain.UserAggregate.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Books.Domain.UserAggregate
 {
-    public class User : IAggregateRoot<UserId>
+    public class User : AggregateRoot<UserId>
     {
         public UserId Id { get; private set; }
         public string UserName { get; set; }

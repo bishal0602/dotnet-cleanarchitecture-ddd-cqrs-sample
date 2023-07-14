@@ -5,6 +5,7 @@
 
 # Database
 *.db*
+**/Migrations/
 
 # User-specific files
 *.rsuser

@@ -18,6 +18,7 @@ The project follows a modular structure based on the principles of Clean Archite
 │   ├── Books
 │   │   ├── Commands
 │   │   └── Queries
+│   │   └── Events
 │   └── Authentication
 │       ├── Commands
 │       └── Queries
@@ -25,13 +26,15 @@ The project follows a modular structure based on the principles of Clean Archite
 │   ├── BookAggregate
 │   │   ├── Entities
 │   │   └── ValueObjects
+│   │   └── Events
 │   └── UserAggregate
-│       ├── Entities
-│       └── ValueObjects
+│   │   ├── Entities
+│   │   └── ValueObjects
 ├── Infrastructure
 │   ├── Persistence
 │   │   ├── Configurations
 │   │   └── Repositories
+│   │   └── Interceptors
 │   ├── Services
 │   └── Authentication
 ├── Presentation
@@ -49,6 +52,7 @@ The project follows a modular structure based on the principles of Clean Archite
 
   - **Commands**: Holds the command handlers responsible for handling application commands.
   - **Queries**: Contains the query handlers responsible for handling application queries.
+  - **Events**: Contains the event handlers responsible for reacting to domain events.
   - **Contracts**: Defines contracts and interfaces used across the application.
 
 - **Domain**: Represents the core domain model and business logic of the application.
@@ -56,6 +60,7 @@ The project follows a modular structure based on the principles of Clean Archite
   - **UserAggregate**: Handles domain logic related to users.
   - **BookAggregate**: Handles domain logic related to books.
     - **Entities**: Defines the domain entities and their behaviors.
+    - **Events**: Defines domain events specific to the book aggregate.
     - **ValueObjects**: Contains value objects used within the domain
   - **Common**: Contains common domain elements such as interfaces, base classes, or utility classes.
 
@@ -64,6 +69,7 @@ The project follows a modular structure based on the principles of Clean Archite
   - **Persistence**: Includes data access-related components, such as migrations, repositories and configurations.
     - **Repositories**: Implements repositories for data access and persistence.
     - **Configurations**: Defines entity configurations for mapping domain entities to database tables.
+    - **Interceptors**: Contains interceptors for intercepting and modifying data access operations.
   - **Services**: Implements various services used by the project.
   - **Authentication**: Handles authentication-related infrastructure concerns.
 

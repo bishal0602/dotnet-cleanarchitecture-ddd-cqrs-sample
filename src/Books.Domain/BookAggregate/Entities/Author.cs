@@ -1,9 +1,9 @@
 using Books.Domain.BookAggregate.ValueObjects;
-using Books.Domain.Common.Interfaces;
+using Books.Domain.Common;
 
 namespace Books.Domain.BookAggregate.Entities
 {
-    public class Author : IEntity<AuthorId>
+    public class Author : Entity<AuthorId>
     {
         private readonly IList<Book> _books = new List<Book>();
         public AuthorId Id { get; private set; }

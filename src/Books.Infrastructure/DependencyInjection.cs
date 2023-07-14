@@ -3,6 +3,7 @@ using Books.Application.Contracts.Services;
 using Books.Domain.UserAggregate;
 using Books.Infrastructure.Authentication;
 using Books.Infrastructure.Persistence;
+using Books.Infrastructure.Persistence.Interceptors;
 using Books.Infrastructure.Persistence.Repositories;
 using Books.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -99,6 +100,7 @@ public static class DependencyInjection
             options.UseSqlite(connectionString);
         });
 
+        services.AddScoped<PublishDomainEventInterceptor>();
         services.AddScoped<IBookRepository, BookRepository>();
         services.AddScoped<IAuthorRepository, AuthorRepository>();
         services.AddScoped<IUserRespository, UserRepository>();
