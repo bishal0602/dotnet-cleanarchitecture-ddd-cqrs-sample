@@ -96,4 +96,30 @@ This project utilizes the following libraries and packages:
 - [CSharpFunctionalExtensions](https://github.com/vkhorikov/CSharpFunctionalExtensions): A library that provides functional programming concepts to C#.
 - [CsvHelper](https://github.com/JoshClose/CsvHelper): A library for reading and writing CSV files.
 
+## Client: ReactUI
+
+<p align="center">
+  <img src="assets/reactui_home.jpeg" alt="ReactUI Home" width="400" />
+  <br>
+  <em>Home Page: List of Books</em>
+</p>
+
+<p align="center">
+  <img src="assets/reactui_details.jpeg" alt="ReactUI Details" width="400" />
+  <br>
+  <em>Details Page: View detailed information about a book with comments from other users</em>
+</p>
+
+<p align="center">
+  <img src="assets/reactui_profile.jpeg" alt="ReactUI Profile" width="400" />
+  <br>
+  <em>Profile Page: User's profile page</em>
+</p>
+
+<p align="center">
+  <img src="assets/reactui_export.jpeg" alt="ReactUI Export" width="400" />
+  <br>
+  <em>Export Page: Export data in CSV format</em>
+</p>
+
 ---
