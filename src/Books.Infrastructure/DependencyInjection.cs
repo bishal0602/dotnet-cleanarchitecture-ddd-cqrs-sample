@@ -101,6 +101,7 @@ public static class DependencyInjection
         });
 
         services.AddScoped<PublishDomainEventInterceptor>();
+        services.AddScoped<AuditableInterceptor>();
         services.AddScoped<IBookRepository, BookRepository>();
         services.AddScoped<IAuthorRepository, AuthorRepository>();
         services.AddScoped<IUserRespository, UserRepository>();

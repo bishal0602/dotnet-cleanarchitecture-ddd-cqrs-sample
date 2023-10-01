@@ -20,7 +20,7 @@ namespace Books.Application.Books.Queries.GetBookDetail
             BookId bookId = BookId.Create(request.Id);
 
             Book? book = await _bookRepository.GetBookByIdAsync(bookId);
-            if (book == null)
+            if (book is null)
             {
                 return new NotFoundError($"Book with Id {bookId} was not found");
             }

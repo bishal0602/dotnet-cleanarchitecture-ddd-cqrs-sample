@@ -14,9 +14,9 @@ namespace Books.Infrastructure.Persistence
     public class BooksDbContext : DbContext
     {
         private readonly IDateTimeProvider _dateTimeProvider;
-        private readonly ILoggedInUserService _loggedInUserService;
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly PublishDomainEventInterceptor _publishDomainEventInterceptor;
+        private readonly AuditableInterceptor _auditableInterceptor;
 
         public DbSet<Book> Books { get; set; } = null!;
         public DbSet<BookReview> BookReviews { get; set; } = null!;
@@ -24,16 +24,16 @@ namespace Books.Infrastructure.Persistence
         public DbSet<AuthorBook> AuthorBooks { get; set; } = null!;
         public DbSet<User> Users { get; set; } = null!;
 
-        public BooksDbContext(DbContextOptions<BooksDbContext> options, IDateTimeProvider dateTimeProvider, ILoggedInUserService loggedInUserService, IPasswordHasher<User> passwordHasher, PublishDomainEventInterceptor publishDomainEventInterceptor) : base(options)
+        public BooksDbContext(DbContextOptions<BooksDbContext> options, IDateTimeProvider dateTimeProvider, IPasswordHasher<User> passwordHasher, PublishDomainEventInterceptor publishDomainEventInterceptor, AuditableInterceptor auditableInterceptor) : base(options)
         {
             _dateTimeProvider = dateTimeProvider ?? throw new ArgumentNullException(nameof(dateTimeProvider));
-            _loggedInUserService = loggedInUserService;
             _passwordHasher = passwordHasher;
             _publishDomainEventInterceptor = publishDomainEventInterceptor;
+            _auditableInterceptor = auditableInterceptor;
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.AddInterceptors(_publishDomainEventInterceptor);
+            optionsBuilder.AddInterceptors(_publishDomainEventInterceptor, _auditableInterceptor);
             base.OnConfiguring(optionsBuilder);
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -45,22 +45,6 @@ namespace Books.Infrastructure.Persistence
         }
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
-            foreach (var entry in ChangeTracker.Entries<IAuditable>())
-            {
-                switch (entry.State)
-                {
-                    case (EntityState.Added):
-                        entry.Entity.CreatedOn = _dateTimeProvider.Now;
-                        entry.Entity.CreatedBy = _loggedInUserService.UserName;
-                        break;
-                    case (EntityState.Modified):
-                        entry.Entity.LastModifiedOn = _dateTimeProvider.Now;
-                        entry.Entity.LastModifiedBy = _loggedInUserService.UserName;
-                        break;
-                    default:
-                        break;
-                }
-            }
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 
