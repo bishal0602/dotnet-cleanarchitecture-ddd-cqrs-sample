@@ -1,1 +1,3 @@
-dotnet ef database drop -p ..\src\Books.Infrastructure\  -s ..\src\Books.API\
+. .\SharedVariables.ps1 
+
+dotnet ef database drop -p $infrastructureProjectPath -s $startupProjectPath

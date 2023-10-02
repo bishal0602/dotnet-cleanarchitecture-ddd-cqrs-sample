@@ -22,7 +22,7 @@ param(
     [Parameter(HelpMessage = "Whether to remove all migrations")]
     [switch]$All
 )
-
+. .\SharedVariables.ps1 
 function RemoveMigrations {
     param(
         [string]$ProjectPath,
@@ -37,9 +37,9 @@ if ($All) {
     $filtered = Select-String -InputObject $migrations -Pattern '\[([\s\S]+)\]' -AllMatches | ForEach-Object { $_.Matches } | ConvertFrom-Json
 
     $filtered | ForEach-Object {
-        RemoveMigrations -ProjectPath "..\src\Books.Infrastructure\" -SourcePath "..\src\Books.API\"
+        RemoveMigrations -ProjectPath $infrastructureProjectPath -SourcePath $startupProjectPath
     }
 }
 else {
-    RemoveMigrations -ProjectPath "..\src\Books.Infrastructure\" -SourcePath "..\src\Books.API\"
+    RemoveMigrations -ProjectPath $infrastructureProjectPath -SourcePath $startupProjectPath
 }

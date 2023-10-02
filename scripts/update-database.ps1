@@ -1,1 +1,3 @@
-dotnet ef database update -p ..\src\Books.Infrastructure\  -s ..\src\Books.API\
+. .\SharedVariables.ps1 
+
+dotnet ef database update -p $infrastructureProjectPath  -s $startupProjectPath

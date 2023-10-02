@@ -41,7 +41,7 @@ param (
     [Alias("react")]
     [switch]$RunReact
 )
-
+. .\SharedVariables.ps1 
 function RunProject($projectPath) {
     try {
         $arguments = @(
@@ -55,7 +55,7 @@ function RunProject($projectPath) {
     }
 }
 
-$api = "..\src\Books.API\"
+$api = $startupProjectPath
 RunProject $api
 
 if ($RunExternalServices) {
