@@ -1,4 +1,5 @@
 ﻿using Books.Application.Contracts.Services;
+using Books.Domain.UserAggregate.ValueObjects;
 using System.Security.Claims;
 
 namespace Books.API.Services
@@ -12,11 +13,14 @@ namespace Books.API.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public string? UserName
+        public UserId? UserId
         {
             get
             {
-                return _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Name);
+                var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (userId == null)
+                    return null;
+                return UserId.Create(new Guid(userId));
             }
         }
 

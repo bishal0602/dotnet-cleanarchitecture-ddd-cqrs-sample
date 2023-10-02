@@ -41,11 +41,11 @@ namespace Books.Infrastructure.Persistence.Interceptors
                 {
                     case (EntityState.Added):
                         entry.Entity.CreatedOn = _dateTimeProvider.Now;
-                        entry.Entity.CreatedBy = _loggedInUserService.UserName;
+                        entry.Entity.CreatedByUserId = _loggedInUserService.UserId;
                         break;
                     case (EntityState.Modified):
                         entry.Entity.LastModifiedOn = _dateTimeProvider.Now;
-                        entry.Entity.LastModifiedBy = _loggedInUserService.UserName;
+                        entry.Entity.LastModifiedByUserId = _loggedInUserService.UserId;
                         break;
                     default:
                         break;

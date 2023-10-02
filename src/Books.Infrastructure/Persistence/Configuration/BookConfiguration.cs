@@ -3,8 +3,11 @@
 using Books.Domain.BookAggregate;
 using Books.Domain.BookAggregate.Entities;
 using Books.Domain.BookAggregate.ValueObjects;
+using Books.Domain.Common;
+using Books.Domain.UserAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Security.Cryptography;
 
 namespace Books.Infrastructure.Persistence.Configuration
 {
@@ -32,7 +35,6 @@ namespace Books.Infrastructure.Persistence.Configuration
 
 
             builder.Navigation(e => e.Authors).HasField("_authors").UsePropertyAccessMode(PropertyAccessMode.Field);
-
         }
     }
 }

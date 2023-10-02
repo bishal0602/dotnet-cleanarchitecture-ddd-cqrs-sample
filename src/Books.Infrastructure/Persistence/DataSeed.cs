@@ -72,7 +72,7 @@ namespace Books.Infrastructure.Persistence
 
                 var randomUserIndex = random.Next(0, users.Length);
                 var randomUser = users[randomUserIndex];
-                book.CreatedBy = randomUser.UserName;
+                book.CreatedByUserId = randomUser.Id;
             }
 
             var authors = new[] { gMartin, jrTolkien, cTolkien, jRowling, fDostoevsky, hLee, gOrwell, jAusten, fFitzgerald };

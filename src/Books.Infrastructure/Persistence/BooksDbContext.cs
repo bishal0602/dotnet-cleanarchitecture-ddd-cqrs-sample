@@ -5,9 +5,12 @@ using Books.Domain.BookAggregate.ValueObjects;
 using Books.Domain.Common;
 using Books.Domain.Common.Interfaces;
 using Books.Domain.UserAggregate;
+using Books.Domain.UserAggregate.ValueObjects;
+using Books.Infrastructure.Persistence.Configuration;
 using Books.Infrastructure.Persistence.Interceptors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace Books.Infrastructure.Persistence
 {
@@ -40,6 +43,9 @@ namespace Books.Infrastructure.Persistence
         {
             modelBuilder.Ignore<List<IDomainEvent>>()
                 .ApplyConfigurationsFromAssembly(typeof(BooksDbContext).Assembly);
+
+            AuditableConfiguration.Configure(modelBuilder);
+
             DataSeed.Seed(modelBuilder, _passwordHasher, _dateTimeProvider);
             base.OnModelCreating(modelBuilder);
         }
@@ -47,7 +53,5 @@ namespace Books.Infrastructure.Persistence
         {
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
-
-
     }
 }

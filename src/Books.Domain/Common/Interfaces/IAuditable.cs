@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Books.Domain.UserAggregate;
+using Books.Domain.UserAggregate.ValueObjects;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +10,11 @@ namespace Books.Domain.Common.Interfaces
 {
     public interface IAuditable
     {
-        string? CreatedBy { get; set; }
+        User? CreatedBy { get; set; }
+        UserId? CreatedByUserId { get; set; }
         DateTime CreatedOn { get; set; }
-        string? LastModifiedBy { get; set; }
+        User? LastModifiedBy { get; set; }
+        UserId? LastModifiedByUserId { get; set; }
         DateTime? LastModifiedOn { get; set; }
     }
 }
